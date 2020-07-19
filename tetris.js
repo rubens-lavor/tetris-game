@@ -62,17 +62,47 @@ function Piece(tetromino,color){
     this.y = 0
 }
 
-// draw a piece to the board
+// fill function
 
-Piece.prototype.draw = function(){
+Piece.prototype.fill = function(color){
     for (r = 0; r < this.activeTetromino.length; r++) {
         for (c = 0; c < this.activeTetromino.length; c++) {
             //we draw onlly occupied squares
             if( this.activeTetromino[r][c]){
-                drawSquare(this.x + c, this.y + r, this.color)
+                drawSquare(this.x + c, this.y + r, color)
             }
         }
     }
 }
+// draw a piece to the board
+Piece.prototype.draw = function(){
+    this.fill(this.color)
+}
+
+// undraw a piece
+Piece.prototype.unDraw = function(){
+    this.fill(VACANT)
+}
 
 //move down the piece
+Piece.prototype.moveDown = function (){
+    this.unDraw()
+    this.y ++
+    this.draw()
+}
+
+//drop the piece every 1 sec
+
+let dropStart = Date.now()
+function drop(){
+    let now = Date.now()
+    let delta = now - dropStart
+    if(delta > 1000){
+        p.moveDown()
+        dropStart = Date.now()
+    }
+    
+    requestAnimationFrame(drop)
+}
+
+drop()
